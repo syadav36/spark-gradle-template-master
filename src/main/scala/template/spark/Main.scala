@@ -68,6 +68,9 @@ dff.show()
     println(final_check)
 
 
+//CONNECTING TO SQL SEVER***************************************
+
+    /*
     val jdbcHostname = "localhost"
     val jdbcPort = 1433
     val jdbcDatabase = "test"
@@ -94,6 +97,43 @@ dff.show()
 
     employees_table.printSchema()
     employees_table.select("*").show()
+
+*/
+//********************************sql SEVER READ END
+
+    //**********************************MYSQL Connect**************
+
+    Class.forName("com.mysql.jdbc.Driver") // Databricks Runtime 3.3 and below
+
+    val jdbcHostname = "localhost"
+    val jdbcPort = 3306
+    val jdbcDatabase = "test"
+    val jdbcUsername="root"
+    val jdbcPassword="root"
+    // Create the JDBC URL without passing in the user and password parameters.
+    val jdbcUrl = s"jdbc:mysql://${jdbcHostname}:${jdbcPort}/${jdbcDatabase}"
+
+    // Create a Properties() object to hold the parameters.
+    import java.util.Properties
+    val connectionProperties = new Properties()
+
+    connectionProperties.put("user", s"${jdbcUsername}")
+    connectionProperties.put("password", s"${jdbcPassword}")
+
+
+    val employees_table = spark.read.jdbc(jdbcUrl, "emp", connectionProperties)
+
+
+    employees_table.printSchema()
+    employees_table.select("*").show()
+
+
+    import java.sql.DriverManager
+    val connection = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword)
+    connection.isClosed()
+
+//***********************************************mysql read end
+
     var columnsdf1=Seq((Array(1,1),"")).toDF("id","firstName").columns
     var  columnsdf2 =Seq((Array(1,1),"")).toDF("id1","firstName").columns
 
